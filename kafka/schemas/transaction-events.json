@@ -1,0 +1,43 @@
+{
+  "topic": "transactions",
+  "partitions": 3,
+  "key": "transaction_id",
+  "events": [
+    {
+      "event_type": "TransactionCompleted",
+      "producer": "transaction-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "TransactionCompleted",
+        "transaction_id": "uuid",
+        "from_account_id": "uuid | null",
+        "to_account_id": "uuid | null",
+        "customer_id": "uuid",
+        "amount": "decimal",
+        "currency": "string",
+        "type": "TRANSFER | DEPOSIT | WITHDRAWAL",
+        "completed_at": "iso8601 timestamp"
+      }
+    },
+    {
+      "event_type": "TransactionFailed",
+      "producer": "transaction-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "TransactionFailed",
+        "transaction_id": "uuid",
+        "customer_id": "uuid",
+        "amount": "decimal",
+        "failure_reason": "string",
+        "failed_at": "iso8601 timestamp"
+      }
+    }
+  ],
+  "notes": [
+    "Producer writes to outbox_events table in the same DB transaction as the ledger update.",
+    "A separate poller (or Debezium CDC in a stretch-goal version) reads unpublished outbox rows and publishes to Kafka, then marks published = true.",
+    "Consumers must dedupe on event_id since Kafka delivery is at-least-once."
+  ]
+}

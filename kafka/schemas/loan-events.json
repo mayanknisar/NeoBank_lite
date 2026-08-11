@@ -1,0 +1,49 @@
+{
+  "topic": "loans",
+  "partitions": 3,
+  "key": "loan_id",
+  "events": [
+    {
+      "event_type": "LoanApplied",
+      "producer": "loan-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "LoanApplied",
+        "loan_id": "uuid",
+        "customer_id": "uuid",
+        "loan_type": "PERSONAL | HOME | AUTO",
+        "principal_amount": "decimal",
+        "applied_at": "iso8601 timestamp"
+      }
+    },
+    {
+      "event_type": "LoanApproved",
+      "producer": "loan-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "LoanApproved",
+        "loan_id": "uuid",
+        "customer_id": "uuid",
+        "principal_amount": "decimal",
+        "emi_amount": "decimal",
+        "tenure_months": "int",
+        "decided_at": "iso8601 timestamp"
+      }
+    },
+    {
+      "event_type": "LoanRejected",
+      "producer": "loan-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "LoanRejected",
+        "loan_id": "uuid",
+        "customer_id": "uuid",
+        "reason": "string",
+        "decided_at": "iso8601 timestamp"
+      }
+    }
+  ]
+}

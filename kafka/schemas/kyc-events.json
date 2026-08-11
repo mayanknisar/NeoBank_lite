@@ -1,0 +1,22 @@
+{
+  "topic": "kyc-events",
+  "partitions": 1,
+  "key": "customer_id",
+  "events": [
+    {
+      "event_type": "KYCUpdated",
+      "producer": "account-service",
+      "consumers": ["notification-service"],
+      "schema": {
+        "event_id": "uuid",
+        "event_type": "KYCUpdated",
+        "customer_id": "uuid",
+        "status": "PENDING | VERIFIED | REJECTED",
+        "updated_at": "iso8601 timestamp"
+      }
+    }
+  ],
+  "consumer_group": {
+    "notification-service": "notification-service-group"
+  }
+}
