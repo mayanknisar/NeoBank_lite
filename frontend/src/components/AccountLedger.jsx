@@ -1,9 +1,9 @@
 import { useState } from "react";
 import BalanceDisplay from "./BalanceDisplay.jsx";
 import StatusStamp from "./StatusStamp.jsx";
-import { maskAccountNumber } from "./AccountSidebar.jsx";
+import { maskAccountNumber } from "../utils/format.js";
 
-export default function AccountLedger({ account, balance, kyc, onDebit, onCredit }) {
+export default function AccountLedger({ account, balance, kyc, onDebit, onCredit, readOnly = false }) {
   const [amount, setAmount] = useState("");
   const [actionError, setActionError] = useState(null);
   const [pending, setPending] = useState(false);
@@ -62,37 +62,39 @@ export default function AccountLedger({ account, balance, kyc, onDebit, onCredit
         <span className="detail-row__value">{kyc ? kyc.status : "Not submitted"}</span>
       </div>
 
-      <div className="move-money">
-        <span className="sidebar__label" style={{ color: "var(--ink-soft)" }}>
-          Move money
-        </span>
-        <div className="move-money__row">
-          <input
-            className="move-money__input"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <button
-            className="move-money__btn move-money__btn--credit"
-            onClick={() => handleAction("credit")}
-            disabled={pending}
-          >
-            Credit
-          </button>
-          <button
-            className="move-money__btn move-money__btn--debit"
-            onClick={() => handleAction("debit")}
-            disabled={pending}
-          >
-            Debit
-          </button>
+      {!readOnly && (
+        <div className="move-money">
+          <span className="sidebar__label" style={{ color: "var(--ink-soft)" }}>
+            Move money
+          </span>
+          <div className="move-money__row">
+            <input
+              className="move-money__input"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            <button
+              className="move-money__btn move-money__btn--credit"
+              onClick={() => handleAction("credit")}
+              disabled={pending}
+            >
+              Credit
+            </button>
+            <button
+              className="move-money__btn move-money__btn--debit"
+              onClick={() => handleAction("debit")}
+              disabled={pending}
+            >
+              Debit
+            </button>
+          </div>
+          {actionError && <p className="move-money__error">{actionError}</p>}
         </div>
-        {actionError && <p className="move-money__error">{actionError}</p>}
-      </div>
+      )}
     </div>
   );
 }

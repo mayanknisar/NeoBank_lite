@@ -1,0 +1,63 @@
+<svg width="680" height="380" viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+<rect width="680" height="380" fill="#ffffff"/>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#3a3a3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<!-- React frontend -->
+<rect x="250" y="30" width="180" height="44" rx="8" fill="#ececeb" stroke="#c9c9c7" stroke-width="0.5"/>
+<text x="340" y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">React frontend</text>
+<text x="340" y="64" text-anchor="middle" font-size="11" fill="#5a5a5a">Dashboard, forms</text>
+
+<line x1="340" y1="74" x2="340" y2="96" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- API gateway -->
+<rect x="250" y="96" width="180" height="44" rx="8" fill="#ececeb" stroke="#c9c9c7" stroke-width="0.5"/>
+<text x="340" y="114" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">API gateway</text>
+<text x="340" y="130" text-anchor="middle" font-size="11" fill="#5a5a5a">Routes REST calls</text>
+
+<line x1="290" y1="140" x2="115" y2="172" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="320" y1="140" x2="265" y2="172" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="360" y1="140" x2="415" y2="172" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="390" y1="140" x2="565" y2="172" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Services row -->
+<rect x="50" y="172" width="130" height="56" rx="8" fill="#dcefec" stroke="#a8d2cb" stroke-width="0.5"/>
+<text x="115" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Account</text>
+<text x="115" y="212" text-anchor="middle" font-size="11" fill="#5a5a5a">Balances, KYC</text>
+
+<rect x="200" y="172" width="130" height="56" rx="8" fill="#dcefec" stroke="#a8d2cb" stroke-width="0.5"/>
+<text x="265" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Transaction</text>
+<text x="265" y="212" text-anchor="middle" font-size="11" fill="#5a5a5a">Ledger entries</text>
+
+<rect x="350" y="172" width="130" height="56" rx="8" fill="#dcefec" stroke="#a8d2cb" stroke-width="0.5"/>
+<text x="415" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Loan</text>
+<text x="415" y="212" text-anchor="middle" font-size="11" fill="#5a5a5a">Applications</text>
+
+<rect x="500" y="172" width="130" height="56" rx="8" fill="#dcefec" stroke="#a8d2cb" stroke-width="0.5"/>
+<text x="565" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Notification</text>
+<text x="565" y="212" text-anchor="middle" font-size="11" fill="#5a5a5a">Async consumer</text>
+
+<!-- Branch to data layer / Kafka -->
+<line x1="340" y1="228" x2="340" y2="242" stroke="#3a3a3a" stroke-width="1.5"/>
+<path d="M340 242 L200 242 L200 256" fill="none" stroke="#3a3a3a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M340 242 L480 242 L480 256" fill="none" stroke="#3a3a3a" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+
+<!-- Data layer -->
+<rect x="80" y="256" width="260" height="64" rx="12" fill="#dce8f5" stroke="#a9c6e8" stroke-width="0.5"/>
+<text x="210" y="282" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Postgres + Redis</text>
+<text x="210" y="300" text-anchor="middle" font-size="11" fill="#5a5a5a">Per-service DBs, cache</text>
+
+<!-- Kafka -->
+<rect x="370" y="256" width="260" height="64" rx="12" fill="#f7e9d2" stroke="#e3c68e" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="500" y="282" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Kafka broker</text>
+<text x="500" y="300" text-anchor="middle" font-size="11" fill="#5a5a5a">transactions, loans, kyc-events</text>
+
+<!-- Legend -->
+<line x1="182" y1="345" x2="212" y2="345" stroke="#3a3a3a" stroke-width="1.5"/>
+<text x="220" y="349" font-size="11" fill="#5a5a5a">Sync (REST/gRPC)</text>
+<line x1="359" y1="345" x2="389" y2="345" stroke="#3a3a3a" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="397" y="349" font-size="11" fill="#5a5a5a">Async (Kafka)</text>
+</svg>

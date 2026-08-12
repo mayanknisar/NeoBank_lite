@@ -51,10 +51,20 @@ export function getKycStatus(customerId) {
 
 // POST /api/accounts/{accountId}/debit  { amount } -> { success, newBalance, version }
 export function debitAccount(accountId, amount) {
-  return post(`/api/accounts/${accountId}/debit`, amount);
+  return post(`/api/accounts/${accountId}/debit`, { amount });
 }
 
 // POST /api/accounts/{accountId}/credit  { amount } -> { success, newBalance, version }
 export function creditAccount(accountId, amount) {
-  return post(`/api/accounts/${accountId}/credit`, amount);
+  return post(`/api/accounts/${accountId}/credit`, { amount });
+}
+
+// POST /api/customers  { fullName, email, phone, dateOfBirth } -> { customerId }
+export function createCustomer(customer) {
+  return post(`/api/customers`, customer);
+}
+
+// POST /api/customers/{customerId}/accounts  { accountType, initialDeposit } -> Account
+export function createAccount(customerId, payload) {
+  return post(`/api/customers/${customerId}/accounts`, payload);
 }
