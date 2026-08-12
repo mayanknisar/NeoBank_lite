@@ -22,8 +22,18 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
     });
-builder.Services.AddSwaggerGen();           // Generates the Swagger JSON schema
-
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowedCorsOrigins",
+                      policy =>
+                      {
+                          policy.WithOrigins("https://localhost:3000",
+                                              "http://localhost:3000")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
 builder.Services.AddDbContext<SqliteDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")
         ?? throw new InvalidOperationException("Sqlite connection string not configured")));
@@ -42,6 +52,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();   // Serves the documentation as a JSON endpoint
     app.UseSwaggerUI(); // Serves the interactive web UI webpage
 }
+app.UseCors("AllowedCorsOrigins");
+
 app.MapGrpcService<AccountGrpcServiceImpl>();
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));

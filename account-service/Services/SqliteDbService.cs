@@ -18,6 +18,7 @@ public class SqliteDbService : IDatabaseService
         if (account is null) return Task.FromResult<Account?>(null);
         account.Balance += amount;
         account.Version++;
+        _dbContext.SaveChanges();
         return Task.FromResult<Account?>(account);
     }
 

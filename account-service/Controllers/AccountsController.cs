@@ -45,12 +45,8 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("accounts/{accountId:guid}/debit")]
-    public async Task<IActionResult> DebitAccount(Guid accountId, [FromBody] JsonElement body)
+    public async Task<IActionResult> DebitAccount(Guid accountId, [FromBody] decimal amount)
     {
-        if (!body.TryGetProperty("amount", out var amt) || amt.ValueKind != JsonValueKind.Number)
-            return BadRequest(Error("INVALID_REQUEST", "Missing or invalid 'amount' field."));
-
-        var amount = amt.GetDecimal();
         var current = await _repo.GetAccountAsync(accountId);
         if (current is null) return NotFound(Error("ACCOUNT_NOT_FOUND", "Account not found."));
 
@@ -71,12 +67,8 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("accounts/{accountId:guid}/credit")]
-    public async Task<IActionResult> CreditAccount(Guid accountId, [FromBody] JsonElement body)
+    public async Task<IActionResult> CreditAccount(Guid accountId, [FromBody] decimal amount)
     {
-        if (!body.TryGetProperty("amount", out var amt) || amt.ValueKind != JsonValueKind.Number)
-            return BadRequest(Error("INVALID_REQUEST", "Missing or invalid 'amount' field."));
-
-        var amount = amt.GetDecimal();
         var current = await _repo.GetAccountAsync(accountId);
         if (current is null) return NotFound(Error("ACCOUNT_NOT_FOUND", "Account not found."));
 
