@@ -19,6 +19,12 @@ AccountRepository
         return await _dbService.GetAccountAsync(accountId);
     }
 
+    public async Task<IEnumerable<Customer>> GetCustomersAsync()
+    {
+        return await _dbService.GetCustomersAsync();
+    }
+
+
     public async Task<IEnumerable<Account>> GetAccountsForCustomerAsync(Guid customerId)
     {
         return await _dbService.GetAccountsForCustomerAsync(customerId);
@@ -53,5 +59,10 @@ AccountRepository
     public async Task<Guid?> CreateCustomerAsync(Customer customer)
     {
         return await _dbService.CreateCustomerAsync(customer);
+    }
+
+    public async Task<Guid?> CreateAccountAsync(AccountDTO account, Guid customerId)
+    {
+        return await _dbService.CreateAccountAsync(account, customerId);
     }
 }

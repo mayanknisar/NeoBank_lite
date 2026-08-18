@@ -134,4 +134,47 @@ public class PostgresDbService : IDatabaseService
     {
         return $"ACC{DateTime.UtcNow:yyyyMMddHHmmssfff}{Guid.NewGuid():N}".Substring(0, 20);
     }
+
+    public async Task<Guid?> CreateAccountAsync(AccountDTO accountdto, Guid customerId)
+    {
+        if (accountdto is null) throw new ArgumentNullException(nameof(accountdto));
+        if (customerId == Guid.Empty) throw new ArgumentException("Customer ID cannot be empty", nameof(customerId));
+
+        var account = new Account
+        {
+            AccountId = Guid.NewGuid(),
+            CustomerId = customerId,
+            AccountNumber = GenerateAccountNumber(),
+            AccountType = accountdto.AccountType,
+            Balance = accountdto.Balance,
+            Status = "ACTIVE",
+            Version = 1
+        };
+
+        using var conn = Connection();
+        await conn.OpenAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        await conn.ExecuteAsync(
+            """
+            INSERT INTO accounts (account_id, customer_id, account_number, account_type, balance, status, version, created_at, updated_at)
+            VALUES (@AccountId, @CustomerId, @AccountNumber, @AccountType, @Balance, @Status, @Version, now(), now())
+            """,
+            account,
+            tx);
+
+        await tx.CommitAsync();
+        return account.AccountId;
+    }
+
+    public async Task<IEnumerable<Customer>> GetCustomersAsync()
+    {
+        using var conn = Connection();
+        return await conn.QueryAsync<Customer>(
+            """
+            SELECT customer_id AS CustomerId, full_name AS FullName,
+                   email AS Email, phone AS Phone, date_of_birth AS DateOfBirth
+            FROM customers
+            """);
+    }
 }

@@ -2,6 +2,7 @@ using AccountService.Models;
 
 public interface IDatabaseService
 {
+    Task<IEnumerable<Customer>> GetCustomersAsync();
     Task<Account?> GetAccountAsync(Guid accountId);
     Task<IEnumerable<Account>> GetAccountsForCustomerAsync(Guid customerId);
     Task<KycStatus?> GetKycStatusAsync(Guid customerId);
@@ -11,4 +12,5 @@ public interface IDatabaseService
     Task<decimal> GetAverageBalanceLast90DaysAsync(Guid accountId);
 
     Task<Guid?> CreateCustomerAsync(Customer customer);
+    Task<Guid?> CreateAccountAsync(AccountDTO account, Guid customerId);
 }

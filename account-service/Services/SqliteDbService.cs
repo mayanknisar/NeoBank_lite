@@ -32,6 +32,12 @@ public class SqliteDbService : IDatabaseService
         return Task.FromResult<Account?>(account);
     }
 
+    public Task<IEnumerable<Customer>> GetCustomersAsync()
+    {
+        _dbContext.ChangeTracker.Clear(); // Clear the change tracker to avoid tracking issues
+        return _dbContext.Customers.ToListAsync().ContinueWith(t => (IEnumerable<Customer>)t.Result);
+    }
+
     public Task<Account?> GetAccountAsync(Guid accountId)
     {
         return _dbContext.Accounts
@@ -95,6 +101,35 @@ public class SqliteDbService : IDatabaseService
             Console.WriteLine($"Error creating customer and account: {ex.Message}");
             return null;
 
+        }
+    }
+
+    public async Task<Guid?> CreateAccountAsync(AccountDTO accountdto, Guid customerId)
+    {
+        try
+        {
+            if (!_dbContext.Customers.Any(c => c.CustomerId == customerId))
+                throw new ArgumentException("Customer not found", nameof(customerId));
+            var account = new Account
+            {
+                AccountId = Guid.NewGuid(),
+                CustomerId = customerId,
+                AccountNumber = GenerateAccountNumber(),
+                AccountType = accountdto.AccountType,
+                Balance = accountdto.Balance,
+                Status = "ACTIVE",
+                Version = 1
+            };
+
+            _dbContext.Accounts.Add(account);
+            var changes = await _dbContext.SaveChangesAsync();
+            return changes > 0 ? account.AccountId : (Guid?)null;
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (you can use a logging framework like Serilog, NLog, etc.)
+            Console.WriteLine($"Error creating account: {ex.Message}");
+            return null;
         }
     }
 

@@ -37,6 +37,13 @@ public class AccountsController : ControllerBase
         return Ok(new { account.AccountId, account.Balance, account.Version });
     }
 
+    [HttpGet("customers")]
+    public async Task<IActionResult> GetCustomers()
+    {
+        var customers = await _repo.GetCustomersAsync();
+        return Ok(customers);
+    }
+
     [HttpGet("customers/{customerId:guid}/accounts")]
     public async Task<IActionResult> GetCustomerAccounts(Guid customerId)
     {
@@ -103,6 +110,14 @@ public class AccountsController : ControllerBase
         var customerId = await _repo.CreateCustomerAsync(customer);
         if (customerId is null) return BadRequest(Error("CUSTOMER_CREATION_FAILED", "Failed to create customer."));
         return CreatedAtAction(nameof(GetCustomerAccounts), new { customerId }, new { customerId });
+    }
+
+    [HttpPost("customers/{customerId:guid}/accounts")]
+    public async Task<IActionResult> CreateAccount(Guid customerId, [FromBody] AccountDTO account)
+    {
+        var accId = await _repo.CreateAccountAsync(account, customerId);
+        if (accId is null) return BadRequest(Error("ACCOUNT_CREATION_FAILED", "Failed to create account."));
+        return CreatedAtAction(nameof(GetAccount), new { accountId = accId }, new { accountId = accId });
     }
 
     private static object Error(string code, string message) =>

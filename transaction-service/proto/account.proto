@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package neobank.account.v1;
+
+option csharp_namespace = "NeoBank.Account.Grpc";
+
+import "google/protobuf/timestamp.proto";
+
+service AccountService {
+  // Sync lookups — called by React (via gateway) and other services
+  rpc GetAccount (GetAccountRequest) returns (AccountResponse);
+  rpc GetBalance (GetBalanceRequest) returns (BalanceResponse);
+
+  // Sync mutations — called by Transaction Service & Loan Service.
+  // Must be idempotent via idempotency_key so retries are safe.
+  rpc DebitAccount (DebitRequest) returns (LedgerOpResponse);
+  rpc CreditAccount (CreditRequest) returns (LedgerOpResponse);
+
+  // Used by Loan Service to check standing before approval
+  rpc CheckAccountStanding (StandingRequest) returns (StandingResponse);
+}
+
+message GetAccountRequest {
+  string account_id = 1;
+}
+
+message GetBalanceRequest {
+  string account_id = 1;
+}
+
+message AccountResponse {
+  string account_id = 1;
+  string customer_id = 2;
+  string account_number = 3;
+  string account_type = 4;
+  double balance = 5;
+  string status = 6;
+}
+
+message BalanceResponse {
+  string account_id = 1;
+  double balance = 2;
+  int64 version = 3;          // optimistic lock version, echoed back for cache validation
+}
+
+message DebitRequest {
+  string account_id = 1;
+  double amount = 2;
+  string idempotency_key = 3;
+  string reference_transaction_id = 4;
+}
+
+message CreditRequest {
+  string account_id = 1;
+  double amount = 2;
+  string idempotency_key = 3;
+  string reference_transaction_id = 4;
+}
+
+message LedgerOpResponse {
+  bool success = 1;
+  string message = 2;         // failure reason if success = false
+  double new_balance = 3;
+  int64 version = 4;
+}
+
+message StandingRequest {
+  string account_id = 1;
+}
+
+message StandingResponse {
+  bool in_good_standing = 1;
+  string kyc_status = 2;
+  double average_balance_last_90_days = 3;
+}

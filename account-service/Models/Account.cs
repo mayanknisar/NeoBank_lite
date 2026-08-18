@@ -30,3 +30,5 @@ public class KycStatus
     public string Status { get; set; } = default!;
     public DateTime? VerifiedAt { get; set; }
 }
+
+public record AccountDTO(string AccountType, decimal Balance);
