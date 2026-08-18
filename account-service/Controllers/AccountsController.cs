@@ -11,12 +11,12 @@ namespace AccountService.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly AccountRepository _repo;
-    //  private readonly AccountCacheService _cache;
+    private readonly AccountCacheService _cache;
 
-    public AccountsController(AccountRepository repo/*, AccountCacheService cache*/)
+    public AccountsController(AccountRepository repo, AccountCacheService cache)
     {
         _repo = repo;
-        //  _cache = cache;
+        _cache = cache;
     }
 
     [HttpGet("accounts/{accountId:guid}")]
@@ -31,7 +31,7 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> GetBalance(Guid accountId)
     {
         var account = await _repo.GetAccountAsync(accountId);
-        //await _cache.GetAccountWithCachedBalanceAsync(accountId);
+        await _cache.GetAccountWithCachedBalanceAsync(accountId);
         if (account is null)
             return NotFound(Error("ACCOUNT_NOT_FOUND", "Account not found."));
         return Ok(new { account.AccountId, account.Balance, account.Version });

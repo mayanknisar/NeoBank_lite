@@ -19,8 +19,13 @@ services:
     # Kept as one container here to keep the learning-project footprint light.
 
   redis:
-    image: redis:7-alpine
+    build: ./infra/redis
     ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
@@ -40,17 +45,21 @@ services:
     build: ./account-service
     ports: ["5001:5001", "6001:6001"]   # 5001 REST, 6001 gRPC
     environment:
-      DB_CONN: "Host=postgres;Database=account_db;Username=neobank;Password=neobank"
-      REDIS_CONN: "redis:6379"
-    depends_on: [postgres, redis]
+      ConnectionStrings__Postgres: "Host=postgres;Database=account_db;Username=neobank;Password=neobank"
+      Redis__ConnectionString: "redis:6379"
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_healthy
 
   transaction-service:
     build: ./transaction-service
     ports: ["5002:5002"]
     environment:
-      DB_CONN: "Host=postgres;Database=transaction_db;Username=neobank;Password=neobank"
-      ACCOUNT_GRPC_ADDR: "account-service:6001"
-      KAFKA_BROKERS: "kafka:9092"
+      ConnectionStrings__Postgres: "Host=postgres;Database=transaction_db;Username=neobank;Password=neobank"
+      AccountService__GrpcAddress: "http://account-service:6001"
+      Kafka__Brokers: "kafka:9092"
     depends_on: [postgres, kafka, account-service]
 
   loan-service:
@@ -61,7 +70,15 @@ services:
       REDIS_CONN: "redis:6379"
       ACCOUNT_GRPC_ADDR: "account-service:6001"
       KAFKA_BROKERS: "kafka:9092"
-    depends_on: [postgres, redis, kafka, account-service]
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      account-service:
+        condition: service_started
 
   notification-service:
     build: ./notification-service

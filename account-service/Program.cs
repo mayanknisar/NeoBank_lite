@@ -38,11 +38,11 @@ builder.Services.AddDbContext<SqliteDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")
         ?? throw new InvalidOperationException("Sqlite connection string not configured")));
 
-// builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
-// ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"] ?? "localhost:6379"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"] ?? "localhost:6379"));
 
 builder.Services.AddScoped<AccountRepository>();
-// builder.Services.AddScoped<AccountCacheService>();
+builder.Services.AddScoped<AccountCacheService>();
 builder.Services.AddScoped<IDatabaseService, SqliteDbService>();
 // builder.Services.AddScoped<IDatabaseService, PostgresDbService>();  //uncomment when using Postgres
 
